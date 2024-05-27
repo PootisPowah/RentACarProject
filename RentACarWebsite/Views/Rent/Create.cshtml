@@ -1,0 +1,70 @@
+﻿@model RentCustCarModel
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Create Rent";
+}
+
+<h1>Create Rent</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Rent.CustomerId">Select Customer:</label>
+                <select asp-for="Rent.CustomerId" class="form-control">
+                    <option value="">Select Customer</option>
+                    @foreach (var customer in Model.Customers)
+                    {
+                        <option value="@customer.Id">@customer.Id. @customer.Fname @customer.Lname</option>
+                    }
+                </select>
+                <span asp-validation-for="Rent.CustomerId" class="text-danger"></span>
+                <label asp-for="Rent.CarId">Select Car:</label>
+                <select asp-for="Rent.CarId" class="form-control">
+                    <option value="">Select Car</option>
+                    @foreach (var car in Model.Cars)
+                    {
+                        <option value="@car.Id">@car.Id. @car.Brand @car.Model @car.Year</option>
+                    }
+                </select>
+                <span asp-validation-for="Rent.CarId" class="text-danger"></span>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Rent.StartDate" class="control-label"></label>
+                <input asp-for="Rent.StartDate" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="Rent.StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rent.EndDate" class="control-label"></label>
+                <input asp-for="Rent.EndDate" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="Rent.EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rent.RentPrice" class="control-label">Rent Price</label>
+                <input asp-for="Rent.RentPrice" class="form-control" />
+                <span asp-validation-for="Rent.RentPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rent.PickupStreet" class="control-label"> Pickup Street</label>
+                <input asp-for="Rent.PickupStreet" class="form-control" />
+                <span asp-validation-for="Rent.PickupStreet" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary mt-3" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,115 @@
+﻿@model IEnumerable<CustomerModel>
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "All Customers";
+}
+
+<h2>Customers</h2>
+@if (TempData["DeleteMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["DeleteMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["DeleteMessageError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["DeleteMessageError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["EditMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert" >
+        @TempData["EditMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<a asp-action="Create" class="btn btn-primary mb-3">Create Customer</a>
+<form asp-action="GetCustomerById" onsubmit="return validateForm()" class="mb-3">
+    <div class="form-group">
+        <label for="Id">Enter Customer Id:</label>
+        <input type="number" id="Id" name="Id" min="1" class="form-control" style="width: 20%;" />
+        <button type="submit" class="btn btn-primary mt-2">Get Customer</button>
+        <span id="error-message" style="color: red;"></span>
+    </div>
+</form>
+<form asp-action="Index" class="mb-3">
+    <button type="submit" class="btn btn-secondary">Refresh List</button>
+</form>
+
+<table class="table" id="Table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>First Name</th>
+            <th>LastName</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Salary</th>
+            <th>Birthday</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            <tr>
+                <td>@customer.Id</td>
+                <td>@customer.Fname</td>
+                <td>@customer.Lname</td>
+                <td>@customer.Gender</td>
+                <td>@customer.Age</td>
+                <td>@customer.Salary</td>
+                <td>@customer.Birthday.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@customer.Id" class="btn btn-info">
+                        <img src="/icons/update1.png" />
+                    </a>
+                </td>
+                <td>
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" value="@customer.Id" name="id" />
+                        <button type="submit" class="btn btn-danger">
+                            <img src="/icons/delete1.png" />
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="/Rent" class="btn btn-primary">Go to Rents page</a>
+
+@section Scripts {
+    <script>
+        function validateForm() {
+            var customerIdInput = document.getElementById("Id");
+            var errorMessage = document.getElementById("error-message");
+
+            if (customerIdInput.value === "") {
+                errorMessage.textContent = "Customer ID cannot be empty.";
+                return false;
+            }
+
+
+            if (parseInt(customerIdInput.value) < 0) {
+                errorMessage.textContent = "Customer ID cannot be less than 0.";
+                return false;
+            }
+
+
+            errorMessage.textContent = "";
+            return true;
+        }
+
+
+    </script>
+
+
+
+}

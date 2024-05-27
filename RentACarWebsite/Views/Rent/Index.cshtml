@@ -1,0 +1,133 @@
+﻿@model RentCustCarModel
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "All Rents";
+}
+
+<h2>Rents</h2>
+@if (TempData["DeleteMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["DeleteMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["EditMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["EditMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<a asp-action="Create" class="btn btn-primary mb-3">Create Rent</a>
+<form asp-action="GetRentByCusCar" onsubmit="return validateForm()"class="mb-3">
+    <div class="form-group">
+        <label for="customerId">Select Customer:</label>
+        <select id="customerId" name="customerId" class="form-control" style="width: 20%;">
+            <option value="">Select Customer</option>
+            @foreach (var customer in Model.Customers)
+            {
+                <option value="@customer.Id">@customer.Id. @customer.Fname @customer.Lname</option>
+            }
+        </select>
+
+        <label for="carId">Select Car:</label>
+        <select id="carId" name="carId" class="form-control" style="width:20%;">
+            <option value="">Select Car</option>
+            @foreach (var car in Model.Cars)
+            {
+                <option value="@car.Id">@car.Id. @car.Brand @car.Model @car.Year</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-primary mt-2">Get Rent</button>
+        <span id="error-message" style="color: red;"></span>
+    </div>
+</form>
+<form asp-action="Index" class="mb-3">
+    <button type="submit" class="btn btn-secondary">Refresh List</button>
+</form>
+
+<table class="table" id="Table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Customer Id</th>
+            <th>Car Id</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Rent Price</th>
+            <th>Pickup Street</th>
+            <th>Edit</th>
+            <th>Delete</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rent in Model.Rents)
+        {
+            <tr>
+                <td>@rent.Id</td>
+                <td>@rent.CustomerId</td>
+                <td>@rent.CarId</td>
+                <td>@rent.StartDate.ToShortDateString()</td>
+                <td>@rent.EndDate.ToShortDateString()</td>
+                <td>@rent.RentPrice</td>
+                <td>@rent.PickupStreet</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@rent.Id" class="btn btn-info">
+                        <img src="/icons/update1.png" />
+                    </a>
+                </td>
+                <td>
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" value="@rent.Id" name="id" />
+                        <button type="submit" class="btn btn-danger">
+                            <img src="/icons/delete1.png" />
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="/Customer" class="btn btn-primary">Go to Customers page</a>
+<a href="/Car" class="btn btn-primary">Go to Cars page</a>
+
+@section Scripts {
+    <script>
+        function validateForm() {
+            var customerIdInput = document.getElementById("customerId");
+            var carIdInput = document.getElementById("carId");
+            var errorMessage = document.getElementById("error-message");
+
+            if (customerIdInput.value === "" && carIdInput.value === "") {
+                errorMessage.textContent = "Customer Id and Car Id cannot be empty.";
+                return false;
+            } else if (customerIdInput.value === "") {
+                errorMessage.textContent = "Customer Id cannot be empty.";
+                return false;
+            } else if (carIdInput.value === "") {
+                errorMessage.textContent = "Car Id cannot be empty.";
+                return false;
+            }
+
+            if (parseInt(customerIdInput.value) < 0) {
+                errorMessage.textContent = "Customer Id cannot be less than 0.";
+                return false;
+            }
+
+            if (parseInt(carIdInput.value) < 0) {
+                errorMessage.textContent = "Car Id cannot be less than 0.";
+                return false;
+            }
+
+            errorMessage.textContent = "";
+            return true;
+        }
+    </script>
+}
+
+
+
